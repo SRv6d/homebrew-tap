@@ -11,4 +11,10 @@ cask "hanko" do
   homepage "https://github.com/SRv6d/hanko"
 
   binary "hanko"
+
+  postflight do
+    # Remove the quarantine attribute from the binary
+    system_command "/usr/bin/xattr",
+                   args: ["-r", "-d", "com.apple.quarantine", "#{staged_path}/hanko"]
+  end
 end
