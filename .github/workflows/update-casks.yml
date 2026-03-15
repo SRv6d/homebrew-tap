@@ -22,7 +22,6 @@ jobs:
 
       - name: Check for updates and bump outdated casks
         env:
-          TAP_NAME: ${{ github.repository }}
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: just bump-all
 
