@@ -1,0 +1,24 @@
+---
+name: Verify
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  style-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: Homebrew/actions/setup-homebrew@main
+      - uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
+
+      - name: Run style and audit checks
+        env:
+          TAP_NAME: ${{ github.repository }}
+        run: just verify

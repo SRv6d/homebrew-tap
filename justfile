@@ -74,3 +74,43 @@ bump-all:
       echo "Failed to bump ${#failures[@]} cask(s): ${failures[*]}"
       exit 1
     fi
+
+# Run style checks and strict online audit for all casks
+verify:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    shopt -s nullglob
+    cask_files=(Casks/*.rb)
+    if [ "${#cask_files[@]}" -eq 0 ]; then
+      echo "No casks found in Casks/."
+      exit 0
+    fi
+
+    if [ "$(uname -s)" = "Linux" ]; then
+      export HOMEBREW_SIMULATE_MACOS_ON_LINUX=1
+    fi
+
+    tap_name="$(echo "${TAP_NAME:-local/tap}" | tr '[:upper:]' '[:lower:]')"
+    brew tap "${tap_name}" "${PWD}" >/dev/null
+    tap_repo="$(brew --repository "${tap_name}")"
+    mkdir -p "${tap_repo}/Casks"
+    cp "${cask_files[@]}" "${tap_repo}/Casks/"
+
+    echo "Running brew style..."
+    brew style "${cask_files[@]}"
+
+    failures=()
+    echo "Running brew audit..."
+    for file in "${cask_files[@]}"; do
+      cask="$(basename "${file}" .rb)"
+      if ! brew audit --cask --online --strict "${tap_name}/${cask}"; then
+        failures+=("${cask}")
+      fi
+    done
+
+    if [ "${#failures[@]}" -gt 0 ]; then
+      echo
+      echo "Failed to audit ${#failures[@]} cask(s): ${failures[*]}"
+      exit 1
+    fi
