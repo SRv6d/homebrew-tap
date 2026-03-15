@@ -8,7 +8,7 @@ bump-version cask:
       export HOMEBREW_SIMULATE_MACOS_ON_LINUX=1
     fi
 
-    tap_name="$(echo "${TAP_NAME:-local/tap}" | tr '[:upper:]' '[:lower:]')"
+    tap_name="local/tap"
     full_cask_ref="${tap_name}/{{ cask }}"
 
     if [ ! -f "Casks/{{ cask }}.rb" ]; then
