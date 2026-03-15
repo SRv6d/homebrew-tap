@@ -16,6 +16,8 @@ bump-version cask:
       exit 1
     fi
 
+    # Always retap from the working tree so Homebrew reads the current files.
+    brew untap "${tap_name}" >/dev/null 2>&1 || true
     brew tap "${tap_name}" "${PWD}" >/dev/null
     tap_repo="$(brew --repository "${tap_name}")"
     tap_cask_path="${tap_repo}/Casks/{{ cask }}.rb"
