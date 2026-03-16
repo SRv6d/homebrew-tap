@@ -87,11 +87,13 @@ verify:
       exit 0
     fi
 
-    if [ "$(uname -s)" = "Linux" ]; then
+    os_name="$(uname -s)"
+    if [ "${os_name}" = "Linux" ]; then
       export HOMEBREW_SIMULATE_MACOS_ON_LINUX=1
     fi
 
-    tap_name="$(echo "${TAP_NAME:-local/tap}" | tr '[:upper:]' '[:lower:]')"
+    tap_name="local/tap"
+    brew untap "${tap_name}" >/dev/null 2>&1 || true
     brew tap "${tap_name}" "${PWD}" >/dev/null
     tap_repo="$(brew --repository "${tap_name}")"
     mkdir -p "${tap_repo}/Casks"
@@ -102,9 +104,15 @@ verify:
 
     failures=()
     echo "Running brew audit..."
+    audit_flags=(--cask --strict)
+    if [ "${os_name}" = "Darwin" ]; then
+      audit_flags+=(--online)
+    else
+      echo "Skipping --online audit on ${os_name} (Homebrew Linux quarantine bug)."
+    fi
     for file in "${cask_files[@]}"; do
       cask="$(basename "${file}" .rb)"
-      if ! brew audit --cask --online --strict "${tap_name}/${cask}"; then
+      if ! brew audit "${audit_flags[@]}" "${tap_name}/${cask}"; then
         failures+=("${cask}")
       fi
     done

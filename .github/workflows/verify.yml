@@ -19,6 +19,4 @@ jobs:
       - uses: extractions/setup-just@f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b
 
       - name: Run style and audit checks
-        env:
-          TAP_NAME: ${{ github.repository }}
         run: just verify
