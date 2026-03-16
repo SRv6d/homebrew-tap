@@ -74,3 +74,51 @@ bump-all:
       echo "Failed to bump ${#failures[@]} cask(s): ${failures[*]}"
       exit 1
     fi
+
+# Run style checks and strict online audit for all casks
+verify:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    shopt -s nullglob
+    cask_files=(Casks/*.rb)
+    if [ "${#cask_files[@]}" -eq 0 ]; then
+      echo "No casks found in Casks/."
+      exit 0
+    fi
+
+    os_name="$(uname -s)"
+    if [ "${os_name}" = "Linux" ]; then
+      export HOMEBREW_SIMULATE_MACOS_ON_LINUX=1
+    fi
+
+    tap_name="local/tap"
+    brew untap "${tap_name}" >/dev/null 2>&1 || true
+    brew tap "${tap_name}" "${PWD}" >/dev/null
+    tap_repo="$(brew --repository "${tap_name}")"
+    mkdir -p "${tap_repo}/Casks"
+    cp "${cask_files[@]}" "${tap_repo}/Casks/"
+
+    echo "Running brew style..."
+    brew style "${cask_files[@]}"
+
+    failures=()
+    echo "Running brew audit..."
+    audit_flags=(--cask --strict)
+    if [ "${os_name}" = "Darwin" ]; then
+      audit_flags+=(--online)
+    else
+      echo "Skipping --online audit on ${os_name} (Homebrew Linux quarantine bug)."
+    fi
+    for file in "${cask_files[@]}"; do
+      cask="$(basename "${file}" .rb)"
+      if ! brew audit "${audit_flags[@]}" "${tap_name}/${cask}"; then
+        failures+=("${cask}")
+      fi
+    done
+
+    if [ "${#failures[@]}" -gt 0 ]; then
+      echo
+      echo "Failed to audit ${#failures[@]} cask(s): ${failures[*]}"
+      exit 1
+    fi
