@@ -1,9 +1,9 @@
 cask "hanko" do
   arch arm: "aarch64", intel: "x86_64"
 
-  version "1.1.1"
-  sha256 arm:   "be14e6b885ebe5710a5100d32b08fc4ffb8da2f3a9dcc7eea83ea07057825cc7",
-         intel: "9a41af8311472348e52633ade92ba4d268703270834430e610b2f28545e25f97"
+  version "1.1.2"
+  sha256 arm:   "499ce8397f2602fa32c1f066c98f36af27fc67cb992e3f493277c8a54f39140e",
+         intel: "f08b84d976ac71be5c4e15b63b290d895b652434bd22c2be29624c629e79dc38"
 
   url "https://github.com/SRv6d/hanko/releases/download/v#{version}/hanko-#{version}-#{arch}-apple-darwin.tar.gz"
   name "hanko"
