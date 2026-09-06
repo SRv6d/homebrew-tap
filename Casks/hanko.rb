@@ -10,6 +10,8 @@ cask "hanko" do
   desc "Keeps your allowed signers file up to date"
   homepage "https://github.com/SRv6d/hanko"
 
+  depends_on :macos
+
   binary "hanko"
 
   postflight do
