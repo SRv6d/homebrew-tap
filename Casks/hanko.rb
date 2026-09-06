@@ -14,9 +14,8 @@ cask "hanko" do
 
   binary "hanko"
 
-  postflight do
-    # Remove the quarantine attribute from the binary
-    system_command "/usr/bin/xattr",
-                   args: ["-r", "-d", "com.apple.quarantine", "#{staged_path}/hanko"]
+  postflight_steps do
+    run "/usr/bin/xattr",
+        args: ["-r", "-d", "com.apple.quarantine", "{{staged_path}}/hanko"]
   end
 end
