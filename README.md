@@ -4,8 +4,8 @@
 
 | Name                                              | Description                                | Installation command                       |
 | ------------------------------------------------- | ------------------------------------------ | ------------------------------------------ |
-| [hanko](https://github.com/SRv6d/hanko)           | Keeps your allowed signers file up to date | `brew install --cask srv6d/tap/hanko`      |
-| [slopfilter](https://github.com/SRv6d/slopfilter) | Scores text for likely AI authorship       | `brew install --cask srv6d/tap/slopfilter` |
+| [hanko](https://github.com/marvinvogt/hanko)           | Keeps your allowed signers file up to date | `brew install --cask marvinvogt/tap/hanko`      |
+| [slopfilter](https://github.com/marvinvogt/slopfilter) | Scores text for likely AI authorship       | `brew install --cask marvinvogt/tap/slopfilter` |
 
 ## Updating casks
 
